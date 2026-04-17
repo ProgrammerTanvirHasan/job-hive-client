@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Staatliches } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar1 } from "@/components/navbar1";
+
 import { SessionProvider } from "@/lib/session-context";
 import { getSession } from "@/lib/service/user.service";
-import { HeroSection } from "@/components/hero45";
 
-import CallToAction from "@/components/ui/conversition";
-import WhyChooseUs from "@/components/ui/whyChoose";
-import { Hero47 } from "@/components/hero47";
-import Premium from "@/components/ui/premium";
-import CategoriesJob from "@/components/ui/categoriesJob";
-import UrgentHiring from "@/components/ui/urgentHiring";
-import TopCompanies from "@/components/ui/topCompanies";
-import HowToApply from "@/components/ui/howtoApply";
-import Statistics from "@/components/ui/statistics";
-import Footer from "@/components/ui/footer";
+import { Toaster } from "sonner";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,23 +36,22 @@ export default async function RootLayout({
       suppressHydrationWarning={true}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
-      <SessionProvider initialUser={initialUser}>
-        <Navbar1 />
-
-        <Hero47 />
-        <HeroSection />
-        <Premium />
-        <CategoriesJob />
-        <UrgentHiring />
-        <TopCompanies />
-        <HowToApply />
-        <WhyChooseUs />
-        <Statistics />
-        <CallToAction />
-        <main>{children}</main>
-        <Footer />
-      </SessionProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} flex min-h-svh flex-col antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider initialUser={initialUser}>
+            <main>{children}</main>
+          </SessionProvider>
+        </ThemeProvider>
+        <Toaster richColors position="top-right" />
+      </body>
+    
     </html>
   );
 }
