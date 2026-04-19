@@ -22,14 +22,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
 import { useSession } from "@/lib/session-context";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
-// Validation
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Minimum length is 8"),
 });
 
-// Safe redirect
 function isSafeRedirect(path: string | null): path is string {
   if (!path || typeof path !== "string") return false;
   if (!path.startsWith("/")) return false;
@@ -39,6 +39,7 @@ function isSafeRedirect(path: string | null): path is string {
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
 
@@ -129,25 +130,32 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             />
             <form.Field
               name="password"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+              children={(field) => (
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+
+                  <div className="relative">
                     <Input
-                      type="password"
-                      id={field.name}
-                      name={field.name}
+                      type={showPassword ? "text" : "password"}
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
+                      className="pr-10"
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+
+                  {field.state.meta.isTouched && !field.state.meta.isValid && (
+                    <FieldError errors={field.state.meta.errors} />
+                  )}
+                </Field>
+              )}
             />
           </FieldGroup>
         </form>
