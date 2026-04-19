@@ -145,7 +145,10 @@ export function Navbar1({ className }: { className?: string }) {
                   Profile
                 </Link>
 
-                <Button size="sm" onClick={logout}>
+                <Button
+                  className="bg-[#22426A] border border-white px-6"
+                  onClick={logout}
+                >
                   Logout
                 </Button>
               </>
@@ -226,7 +229,10 @@ export function Navbar1({ className }: { className?: string }) {
 
                       <Link href="/profile">Profile</Link>
 
-                      <Button variant="outline" onClick={logout}>
+                      <Button
+                        className="bg-[#22426A] border border-white px-6"
+                        onClick={logout}
+                      >
                         Logout
                       </Button>
                     </>

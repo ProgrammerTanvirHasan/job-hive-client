@@ -1,10 +1,10 @@
 import { CommonLayoutClient } from "@/components/common-layout-client";
 import { HeroSection } from "@/components/hero45";
 import { Hero47 } from "@/components/hero47";
-import { Navbar1 } from "@/components/navbar1";
+
 import CategoriesJob from "@/components/ui/categoriesJob";
 import CallToAction from "@/components/ui/conversition";
-import Footer from "@/components/ui/footer";
+
 import HowToApply from "@/components/ui/howtoApply";
 import Premium from "@/components/ui/premium";
 import Statistics from "@/components/ui/statistics";
@@ -20,7 +20,6 @@ export default function CommonLayout({
   return (
     <CommonLayoutClient>
       <div>
-        <Navbar1 />
         <Hero47 />
         <HeroSection />
         <Premium />
@@ -33,7 +32,6 @@ export default function CommonLayout({
         <CallToAction />
 
         {children}
-        <Footer />
       </div>
     </CommonLayoutClient>
   );
