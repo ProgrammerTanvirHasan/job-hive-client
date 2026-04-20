@@ -56,8 +56,7 @@ const roleMenus: Record<UserRole, MenuItem[]> = {
   ADMIN: [
     { title: "Dashboard", url: "/admin" },
     { title: "Manage Users", url: "/admin/users" },
-    { title: "Recruiter Requests", url: "/admin/requests" },
-    { title: "Jobs Moderation", url: "/admin/jobs" },
+    { title: "Jobs Moderation", url: "/admin/moderation" },
   ],
 };
 
@@ -69,6 +68,8 @@ export function Navbar1({ className }: { className?: string }) {
     user: { role?: UserRole } | null;
     setUser: (user: any) => void;
   };
+
+ 
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -90,7 +91,7 @@ export function Navbar1({ className }: { className?: string }) {
   return (
     <section
       className={cn(
-        "absolute top-0 left-0 w-full z-50 py-8 bg-[#22426A] text-white px-8",
+        " top-0 left-0 w-full z-50 py-8 bg-[#22426A] text-white px-8",
         className,
       )}
     >

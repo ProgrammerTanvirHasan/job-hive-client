@@ -29,7 +29,7 @@ type SessionContextValue = {
 const SessionContext = createContext<SessionContextValue | null>(null);
 
 export function SessionProvider({
-  initialUser,
+  initialUser = null,
   children,
 }: {
   initialUser: User;

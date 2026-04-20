@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { SessionProvider } from "@/lib/session-context";
-import { getSession } from "@/lib/service/user.service";
+// import { getSession } from "@/lib/service/user.service";
 
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
@@ -30,8 +30,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
-  const initialUser = session.data?.data ?? null;
+  // const session = await getSession();
+  // const initialUser = session.data?.data ?? null;
   return (
     <html
       lang="en"
@@ -47,7 +47,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider initialUser={initialUser}>
+          <SessionProvider initialUser={null}>
             <Navbar1 />
             <main>{children}</main>
             <Footer />
