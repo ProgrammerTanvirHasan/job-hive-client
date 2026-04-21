@@ -43,15 +43,16 @@ const publicMenu: MenuItem[] = [
 const roleMenus: Record<UserRole, MenuItem[]> = {
   USER: [
     { title: "Home", url: "/" },
-    { title: "Jobs", url: "/jobs" },
-    { title: "My Applications", url: "/applications" },
-    { title: "Become Recruiter", url: "/become-recruiter" },
+    { title: "Jobs", url: "/user_route/jobs" },
+    { title: "My Applications", url: "/user_route/applications" },
+    { title: "Become Recruiter", url: "/user_route/become-recruiter" },
   ],
   RECRUITER: [
     { title: "Home", url: "/" },
     { title: "Jobs", url: "/jobs" },
     { title: "Post Job", url: "/post-job" },
     { title: "My Jobs", url: "/my-jobs" },
+    { title: "Post a job", url: "/user_route/become-recruiter" },
   ],
   ADMIN: [
     { title: "Dashboard", url: "/admin" },
@@ -68,8 +69,6 @@ export function Navbar1({ className }: { className?: string }) {
     user: { role?: UserRole } | null;
     setUser: (user: any) => void;
   };
-
- 
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -137,7 +136,7 @@ export function Navbar1({ className }: { className?: string }) {
             {user ? (
               <>
                 {user.role !== "ADMIN" && (
-                  <Link href="/dashboard" className="text-white">
+                  <Link href="/user_route" className="text-white">
                     Dashboard
                   </Link>
                 )}

@@ -9,6 +9,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
 import { Navbar1 } from "@/components/navbar1";
 import Footer from "@/components/ui/footer";
+import Providers from "@/provider/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,7 +50,11 @@ export default async function RootLayout({
         >
           <SessionProvider initialUser={null}>
             <Navbar1 />
-            <main>{children}</main>
+
+            <Providers>
+              <main>{children}</main>
+            </Providers>
+
             <Footer />
           </SessionProvider>
         </ThemeProvider>

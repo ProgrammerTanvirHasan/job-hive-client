@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function CallToAction() {
   return (
@@ -41,9 +42,11 @@ export default function CallToAction() {
                   fast hiring system.
                 </p>
 
-                <Button className="px-6 py-6 text-lg rounded-xl bg-[#22426A]">
-                  Post a Job <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
+                <Link href="/user_route/become-recruiter">
+                  <Button className="px-6 py-6 text-lg rounded-xl bg-[#22426A]">
+                    Post a Job <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
 
                 <div className="mt-6 text-sm text-gray-400">
                   Join thousands of recruiters already hiring faster.

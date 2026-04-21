@@ -20,9 +20,7 @@ export default function SettingsPage() {
           />
         </div>
 
-        <button className="px-4 py-2 bg-black text-white rounded-lg">
-          Save Changes
-        </button>
+        <button className="px-4 py-2  rounded-lg">Save Changes</button>
       </div>
     </div>
   );
