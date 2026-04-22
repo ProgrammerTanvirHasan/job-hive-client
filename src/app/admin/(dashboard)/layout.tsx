@@ -20,17 +20,13 @@ import {
 const navSections = [
   {
     title: "Overview",
-    items: [
-      { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-      { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-    ],
+    items: [{ name: "Dashboard", href: "/admin", icon: LayoutDashboard }],
   },
   {
     title: "Management",
     items: [
-      { name: "Users", href: "/admin/handleuser", icon: Users },
       { name: "Companies", href: "/admin/companies", icon: Building2 },
-      { name: "Jobs", href: "/admin/alljobs", icon: Briefcase },
+
       { name: "Applications", href: "/admin/applications", icon: FileText },
     ],
   },
@@ -59,7 +55,7 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen ">
       <aside className="w-72 p-5">
-        <div className="h-full rounded-2xl bg-white shadow-lg flex flex-col">
+        <div className="h-full rounded-2xl  shadow-lg flex flex-col">
           <div className="p-5 border-b flex items-center">
             <div className="text-4xl italic font-bold leading-none">JH</div>
 
@@ -71,7 +67,7 @@ export default function DashboardLayout({
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             {navSections.map((section) => (
               <div key={section.title}>
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">
+                <p className="text-xs font-semibold  uppercase mb-2 px-2">
                   {section.title}
                 </p>
 
@@ -87,7 +83,7 @@ export default function DashboardLayout({
                           whileTap={{ scale: 0.97 }}
                           className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
                             isActive
-                              ? "bg-black "
+                              ? "bg-white "
                               : "text-gray-600 hover:bg-gray-100"
                           }`}
                         >

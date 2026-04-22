@@ -5,11 +5,11 @@ import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function Premium() {
+export default function AllJobsPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ["premium-jobs"],
+    queryKey: ["all-jobs"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/jobs/premium`);
+      const res = await fetch(`${API_URL}/api/job/jobs/all`);
       return res.json();
     },
   });
@@ -19,7 +19,9 @@ export default function Premium() {
   return (
     <div className="min-h-screen p-10 bg-gray-50">
       {/* HEADER */}
-      <h1 className="text-4xl font-bold text-[#22426A]">Premium Jobs</h1>
+      <h1 className="text-4xl font-bold text-[#22426A]">
+        All Jobs Here You Can Browse Your Desired Positions
+      </h1>
 
       {/* SUB TEXT */}
       <p className="text-gray-600 mt-2 max-w-2xl">
@@ -42,7 +44,7 @@ export default function Premium() {
 
       {/* JOB GRID */}
       <div className="grid lg:grid-cols-2 gap-5 mt-8">
-        {data?.data?.slice(0, 5)?.map((job: any) => (
+        {data?.data?.map((job: any) => (
           <div
             key={job.id}
             className="border bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition"
@@ -72,18 +74,6 @@ export default function Premium() {
           </div>
         ))}
       </div>
-
-      {/* SEE MORE SECTION */}
-      {data?.data?.length > 5 && (
-        <div className="mt-10 text-center">
-          <Link
-            href="/jobs/all"
-            className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800"
-          >
-            See All Premium Jobs →
-          </Link>
-        </div>
-      )}
     </div>
   );
 }

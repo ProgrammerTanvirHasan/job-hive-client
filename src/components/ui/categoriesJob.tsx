@@ -86,7 +86,7 @@ export default function CategoriesJob() {
       {data?.data?.length > 5 && (
         <div className="mt-10 text-center">
           <Link
-            href="/jobs/premium/all"
+            href="/jobs/all"
             className="px-6 py-3 bg-[#22426A] text-white rounded-full hover:bg-gray-800"
           >
             See All Categories Jobs →

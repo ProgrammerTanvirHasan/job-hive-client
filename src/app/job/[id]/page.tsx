@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
@@ -107,6 +108,9 @@ export default function JobDetailsPage() {
           Apply Fee: {job.price} BDT
         </p>
       )}
+      <div className="text-center mt-4 ">
+        <Button className="bg-green-700">Apply Now</Button>
+      </div>
     </div>
   );
 }

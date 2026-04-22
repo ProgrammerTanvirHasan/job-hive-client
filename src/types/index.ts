@@ -28,3 +28,8 @@ export interface User {
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
+
+export type Job = {
+  company: string;
+  description: string;
+};
