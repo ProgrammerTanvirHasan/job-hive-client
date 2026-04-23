@@ -9,7 +9,7 @@ export default function AdminUsersPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["jobs"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job`, {
+      const res = await fetch(`${API_URL}/api/job/all`, {
         credentials: "include",
       });
 

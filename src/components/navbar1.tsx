@@ -48,11 +48,8 @@ const roleMenus: Record<UserRole, MenuItem[]> = {
     { title: "Become Recruiter", url: "/user_route/become-recruiter" },
   ],
   RECRUITER: [
-    { title: "Home", url: "/" },
-    { title: "Jobs", url: "/jobs" },
-    { title: "Post Job", url: "/post-job" },
-    { title: "My Jobs", url: "/my-jobs" },
-    { title: "Post a job", url: "/user_route/become-recruiter" },
+    { title: "My Posts", url: "/recruiter/mypost" },
+    { title: "Post a New Job", url: "/user_route/become-recruiter" },
   ],
   ADMIN: [
     { title: "Dashboard", url: "/admin" },
@@ -85,12 +82,19 @@ export function Navbar1({ className }: { className?: string }) {
     router.push("/");
   };
 
+  // ✅ ROLE BASED DASHBOARD LINK
+  const getDashboardLink = (role?: UserRole) => {
+    if (role === "ADMIN") return "/admin";
+    if (role === "RECRUITER") return "/recruiter";
+    return "/user_route";
+  };
+
   const menuItems: MenuItem[] = user?.role ? roleMenus[user.role] : publicMenu;
 
   return (
     <section
       className={cn(
-        " top-0 left-0 w-full z-50 py-8 bg-[#22426A] text-white px-8",
+        "top-0 left-0 w-full z-50 py-8 bg-[#22426A] text-white px-8",
         className,
       )}
     >
@@ -115,10 +119,10 @@ export function Navbar1({ className }: { className?: string }) {
                       <Link
                         href={item.url}
                         className={cn(
-                          "px-4 py-2 text-xl font-medium rounded-lg transition-none",
-                          "border border-transparent hover:text-black",
-                          isActive &&
-                            "bg-[#1b3555]  text-white hover:text-black",
+                          "px-4 py-2 text-xl font-medium rounded-lg border transition",
+                          isActive
+                            ? "bg-white text-black"
+                            : "text-white hover:bg-white hover:text-black",
                         )}
                       >
                         {item.title}
@@ -135,13 +139,18 @@ export function Navbar1({ className }: { className?: string }) {
 
             {user ? (
               <>
-                {user.role !== "ADMIN" && (
-                  <Link href="/user_route" className="text-white">
-                    Dashboard
-                  </Link>
-                )}
+                {/* ✅ FIXED DASHBOARD */}
+                <Link
+                  href={getDashboardLink(user.role)}
+                  className="text-white hover:text-yellow-300"
+                >
+                  Dashboard
+                </Link>
 
-                <Link href="/profile" className="text-white">
+                <Link
+                  href="/profile"
+                  className="text-white hover:text-yellow-300"
+                >
                   Profile
                 </Link>
 
@@ -205,12 +214,13 @@ export function Navbar1({ className }: { className?: string }) {
 
                       return (
                         <Link
+                          key={item.title}
                           href={item.url}
                           className={cn(
-                            "px-4 py-2 text-xl font-medium rounded-lg transition-none",
-                            "border border-transparent hover:text-black",
-                            isActive &&
-                              "bg-[#1b3555]  text-white hover:text-black",
+                            "px-4 py-2 text-lg rounded",
+                            isActive
+                              ? "bg-white text-black"
+                              : "text-white hover:bg-white hover:text-black",
                           )}
                         >
                           {item.title}
@@ -223,18 +233,11 @@ export function Navbar1({ className }: { className?: string }) {
 
                   {user ? (
                     <>
-                      {user.role !== "ADMIN" && (
-                        <Link href="/dashboard">Dashboard</Link>
-                      )}
+                      <Link href={getDashboardLink(user.role)}>Dashboard</Link>
 
                       <Link href="/profile">Profile</Link>
 
-                      <Button
-                        className="bg-[#22426A] border border-white px-6"
-                        onClick={logout}
-                      >
-                        Logout
-                      </Button>
+                      <Button onClick={logout}>Logout</Button>
                     </>
                   ) : (
                     <>

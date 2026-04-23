@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -43,6 +44,12 @@ export default function BecomeRecruiterPage() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    if (!form.title || !form.company || !form.location || !form.category) {
+      alert("Please fill required fields");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -51,11 +58,19 @@ export default function BecomeRecruiterPage() {
         description: form.description,
         company: form.company,
         location: form.location,
+
         salary: form.salary || null,
-        category: form.category,
+
+        category: form.category.trim().toLowerCase(),
+
         isPaid: form.isPaid,
         price: form.price ? Number(form.price) : null,
-        applyDeadline: form.applyDeadline || null,
+
+        // ✅ DATE FIX
+        applyDeadline: form.applyDeadline
+          ? new Date(form.applyDeadline).toISOString()
+          : null,
+
         requirements: toArray(form.requirements),
         qualifications: toArray(form.qualifications),
         benefits: toArray(form.benefits),
@@ -76,7 +91,7 @@ export default function BecomeRecruiterPage() {
         throw new Error(data.message || "Something went wrong");
       }
 
-      alert("Job submitted successfully!");
+      toast("Job posted successfully!");
       router.push("/user_route");
     } catch (err: any) {
       alert(err.message || "Something went wrong");
@@ -86,8 +101,8 @@ export default function BecomeRecruiterPage() {
   };
 
   return (
-    <div className="min-h-screen  py-10 px-4">
-      <div className=" grid lg:grid-cols-2 gap-10 items-start">
+    <div className="min-h-screen py-10 px-4">
+      <div className="grid lg:grid-cols-2 gap-10 items-start">
         {/* LEFT SIDE */}
         <div className="space-y-6">
           <div>
@@ -102,7 +117,7 @@ export default function BecomeRecruiterPage() {
             </ul>
           </div>
 
-          <div className=" p-6 rounded-xl">
+          <div className="p-6 rounded-xl bg-gray-50">
             <p className="text-sm text-gray-500">Pro Tip</p>
             <p className="font-medium mt-1">
               Clear job descriptions get 3x more applications.
@@ -110,10 +125,9 @@ export default function BecomeRecruiterPage() {
           </div>
         </div>
 
-        {/* RIGHT SIDE FORM */}
-        <div className="  p-8">
+        <div className="p-8  rounded-xl shadow">
           <p className="text-gray-500 mt-2">
-            Post your job and find the perfect candidate for your company.
+            Post your job and find the perfect candidate.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4 mt-6">
@@ -144,6 +158,15 @@ export default function BecomeRecruiterPage() {
               required
             />
 
+            <input
+              name="category"
+              placeholder="Category (e.g. web development)"
+              className="w-full border rounded-lg px-3 py-2"
+              value={form.category}
+              onChange={handleChange}
+              required
+            />
+
             <div>
               <label className="text-sm text-gray-500">Apply Deadline</label>
               <input
@@ -154,15 +177,6 @@ export default function BecomeRecruiterPage() {
                 onChange={handleChange}
               />
             </div>
-
-            <input
-              name="category"
-              placeholder="Category"
-              className="w-full border rounded-lg px-3 py-2"
-              value={form.category}
-              onChange={handleChange}
-              required
-            />
 
             <input
               name="salary"

@@ -9,7 +9,7 @@ export default function Premium() {
   const { data, isLoading } = useQuery({
     queryKey: ["premium-jobs"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/jobs/premium`);
+      const res = await fetch(`${API_URL}/api/job/premium`);
       return res.json();
     },
   });

@@ -9,7 +9,7 @@ export default function TopCompanies() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["top-companies"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/jobs/all`, {
+      const res = await fetch(`${API_URL}/api/job/all`, {
         method: "GET",
         credentials: "include",
         headers: {

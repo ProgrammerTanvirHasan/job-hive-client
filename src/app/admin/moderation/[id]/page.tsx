@@ -49,7 +49,7 @@ export default function JobDetailsPage() {
     }
   };
 
-  // ---------------- REJECT ----------------
+ 
   const handleReject = async () => {
     try {
       const res = await fetch(`${API_URL}/api/job/admin/${id}/reject`, {
@@ -75,7 +75,7 @@ export default function JobDetailsPage() {
     }
   };
 
-  // ---------------- DELETE ----------------
+  
   const handleDelete = async () => {
     try {
       const confirmDelete = confirm("Are you sure?");
@@ -101,14 +101,14 @@ export default function JobDetailsPage() {
 
   return (
     <div className="mx-auto p-6 min-h-svh">
-      {/* TITLE */}
+   
       <h1 className="text-3xl font-bold">{job.title}</h1>
 
       <p className="text-gray-500 mt-1">
         {job.company} • {job.location}
       </p>
 
-      {/* CATEGORY + STATUS */}
+  
       <div className="flex gap-2 mt-3">
         <span className="bg-blue-100 px-2 py-1 rounded text-xs">
           {job.category}
@@ -127,7 +127,7 @@ export default function JobDetailsPage() {
        
       </div>
 
-      {/* DESCRIPTION */}
+    
       <p className="mt-6 text-gray-700">{job.description}</p>
 
       {job.requirements?.length > 0 && (
@@ -163,9 +163,9 @@ export default function JobDetailsPage() {
         </div>
       )}
 
-      {/* ACTIONS (ALWAYS 3 BUTTONS) */}
+      
       <div className="mt-8 flex gap-3">
-        {/* APPROVE */}
+      
         <button
           onClick={handleApprove}
           className="px-4 py-2 bg-green-600 text-white rounded"
@@ -173,7 +173,7 @@ export default function JobDetailsPage() {
           Approve
         </button>
 
-        {/* REJECT */}
+       
         <button
           onClick={() => setRejectId(Number(id))}
           className="px-4 py-2 bg-yellow-600 text-white rounded"
@@ -181,7 +181,7 @@ export default function JobDetailsPage() {
           Reject
         </button>
 
-        {/* DELETE */}
+     
         <button
           onClick={handleDelete}
           className="px-4 py-2 bg-red-600 text-white rounded"
@@ -190,7 +190,7 @@ export default function JobDetailsPage() {
         </button>
       </div>
 
-      {/* REJECT MODAL */}
+    
       {rejectId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-xl w-[400px]">

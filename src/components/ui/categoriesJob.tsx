@@ -9,7 +9,7 @@ export default function CategoriesJob() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["category-jobs"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/jobs/categories-preview`, {
+      const res = await fetch(`${API_URL}/api/job/categories-preview`, {
         credentials: "include",
       });
 
