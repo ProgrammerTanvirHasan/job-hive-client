@@ -1,15 +1,32 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function CategoriesJob() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["category-jobs"],
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+
+  // ✅ Debounce
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCategory(search);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ["category-jobs", category],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/categories-preview`, {
+      const url = category
+        ? `${API_URL}/api/job/search?category=${encodeURIComponent(category)}`
+        : `${API_URL}/api/job/all`;
+
+      const res = await fetch(url, {
         credentials: "include",
       });
 
@@ -17,6 +34,7 @@ export default function CategoriesJob() {
 
       return res.json();
     },
+    placeholderData: (prev) => prev,
   });
 
   if (isLoading)
@@ -35,6 +53,21 @@ export default function CategoriesJob() {
         Discover high-quality paid job opportunities from top companies. Apply
         faster, get priority visibility, and unlock better career growth.
       </p>
+
+      {/* ✅ SEARCH (new but UI clean) */}
+      <div className="mt-6">
+        <input
+          type="text"
+          placeholder="Search by category..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border px-4 py-2 rounded-lg w-full md:w-1/3"
+        />
+
+        {isFetching && (
+          <p className="text-sm text-gray-500 mt-2">Searching...</p>
+        )}
+      </div>
 
       {/* STATS BAR */}
       <div className="mt-6 flex gap-4 text-sm">
@@ -62,8 +95,13 @@ export default function CategoriesJob() {
               {job.company} • {job.location}
             </p>
 
+            {/* ✅ Apply Fee Fix */}
             <p className="text-green-600 font-bold mt-2">
-              💰 Apply Fee: {job.price} BDT
+              {job.price && job.price > 0 ? (
+                <>💰 Apply Fee: {job.price} BDT</>
+              ) : (
+                <>Free</>
+              )}
             </p>
 
             <p className="text-sm text-gray-600 mt-3 line-clamp-2">

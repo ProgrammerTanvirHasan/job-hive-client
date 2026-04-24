@@ -9,12 +9,12 @@ export default function AllJobsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["all-jobs"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/jobs/all`);
+      const res = await fetch(`${API_URL}/api/job/active`);
       return res.json();
     },
   });
 
-  if (isLoading) return <p className="p-10">Loading...</p>;
+  if (isLoading) return <p className="p-10 min-h-screen">Loading...</p>;
 
   return (
     <div className="min-h-screen p-10 bg-gray-50">
@@ -56,7 +56,11 @@ export default function AllJobsPage() {
             </p>
 
             <p className="text-green-600 font-bold mt-2">
-              💰 Apply Fee: {job.price} BDT
+              {job.price && job.price > 0 ? (
+                <>💰 Apply Fee: {job.price} BDT</>
+              ) : (
+                <>Free</>
+              )}
             </p>
 
             <p className="text-sm text-gray-600 mt-3 line-clamp-2">

@@ -24,7 +24,7 @@ export default function JobDetailsPage() {
   });
 
   if (isLoading) {
-    return <p className="p-5">Loading...</p>;
+    return <p className="p-5 min-h-screen">Loading...</p>;
   }
 
   if (error) {

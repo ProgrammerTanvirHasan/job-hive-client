@@ -24,12 +24,7 @@ export default function UserDashboardLayout({
             >
               Dashboard
             </a>
-            <a
-              href="/user_route/profile"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-            >
-              Profile
-            </a>
+
             <a
               href="/user_route/browse-jobs"
               className="block px-3 py-2 rounded-lg hover:bg-gray-100"

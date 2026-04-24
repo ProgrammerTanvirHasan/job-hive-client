@@ -37,7 +37,7 @@ interface MenuItem {
 
 const publicMenu: MenuItem[] = [
   { title: "Home", url: "/" },
-  { title: "Jobs", url: "/jobs" },
+  { title: "Jobs", url: "/user_route/jobs" },
 ];
 
 const roleMenus: Record<UserRole, MenuItem[]> = {
@@ -46,15 +46,17 @@ const roleMenus: Record<UserRole, MenuItem[]> = {
     { title: "Jobs", url: "/user_route/jobs" },
     { title: "My Applications", url: "/user_route/applications" },
     { title: "Become Recruiter", url: "/user_route/become-recruiter" },
+    { title: "Dashboard", url: "/user_route" },
   ],
   RECRUITER: [
     { title: "My Posts", url: "/recruiter/mypost" },
     { title: "Post a New Job", url: "/user_route/become-recruiter" },
+    { title: "Dashboard", url: "/recruiter" },
   ],
   ADMIN: [
-    { title: "Dashboard", url: "/admin" },
     { title: "Manage Users", url: "/admin/users" },
     { title: "Jobs Moderation", url: "/admin/moderation" },
+    { title: "Dashboard", url: "/admin" },
   ],
 };
 
@@ -139,14 +141,6 @@ export function Navbar1({ className }: { className?: string }) {
 
             {user ? (
               <>
-                {/* ✅ FIXED DASHBOARD */}
-                <Link
-                  href={getDashboardLink(user.role)}
-                  className="text-white hover:text-yellow-300"
-                >
-                  Dashboard
-                </Link>
-
                 <Link
                   href="/profile"
                   className="text-white hover:text-yellow-300"

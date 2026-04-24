@@ -21,12 +21,12 @@ export default function NotAppliedJobsPage() {
     },
   });
 
-  if (isLoading) return <p className="p-10">Loading...</p>;
+  if (isLoading) return <p className="p-10 min-h-screen">Loading...</p>;
 
   if (error) return <p className="p-10 text-red-500">Failed to load jobs</p>;
 
   return (
-    <div className="p-10 bg-gray-50">
+    <div className="p-10 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-[#22426A] mb-8">
         Not Applied Jobs
       </h1>

@@ -1,15 +1,12 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 
-interface Hero47Props {
-  heading?: string;
-  subheading?: string;
-  description?: string;
-  images?: string[];
-  className?: string;
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Hero47 = ({
   heading = "Where",
@@ -22,7 +19,21 @@ const Hero47 = ({
     "https://i.ibb.co/jPKrkJkm/young-adult-buying-products-quarantine.jpg",
   ],
   className,
-}: Hero47Props) => {
+}: any) => {
+  // ✅ fetch categories
+  const { data } = useQuery({
+    queryKey: ["trending-categories"],
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/job/trending-categories`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed");
+
+      return res.json();
+    },
+  });
+
   return (
     <section
       className={cn(
@@ -31,9 +42,7 @@ const Hero47 = ({
       )}
     >
       <div className="container max-w-7xl flex flex-col lg:flex-row items-start gap-16">
-        {/* LEFT SIDE */}
         <div className="lg:w-1/2 flex flex-col gap-8">
-          {/* Heading */}
           <h2 className="text-6xl font-semibold leading-tight max-w-2xl">
             <span className="text-[#22426A]">{heading} </span>
             <span className="text-[#EDB713]">{subheading}</span>
@@ -44,41 +53,19 @@ const Hero47 = ({
             Largest Job Site in Bangladesh
           </p>
 
-          {/* Search Bar */}
           <div className="flex flex-col gap-4 w-full max-w-3xl">
-            <div className="flex items-center w-full bg-white shadow-lg rounded-xl overflow-hidden border">
-              <Input
-                placeholder="Search jobs..."
-                className="border-0 focus-visible:ring-0 px-5 py-6 text-base"
-              />
-              <Button className="rounded-none px-8 py-6 bg-[#22426A] hover:bg-[#1b3554] text-white flex items-center gap-2">
-                Find Jobs
-                <ArrowUpRight className="size-4" />
-              </Button>
-            </div>
+            <div className="flex items-center w-full bg-white shadow-lg rounded-xl overflow-hidden border"></div>
 
-            {/* Trending Categories */}
             <div className="bg-white shadow-md rounded-2xl p-5">
               <h3 className="text-lg font-semibold mb-3">
                 Trending Job Categories
               </h3>
 
               <div className="flex flex-wrap gap-3">
-                {[
-                  "Sales Representative",
-                  "Call Center",
-                  "Marketing",
-                  "Field Sales",
-                  "Customer Service",
-                  "Video Editing",
-                  "Graphic Design",
-                  "Computer Operator",
-                  "Receptionist/Front office Desk",
-                  "Talent Acquisition",
-                ].map((item, i) => (
+                {data?.data?.map((item: string, i: number) => (
                   <div
                     key={i}
-                    className="flex items-center gap-2 px-3 py-2  rounded-lg text-sm bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-gray-50 hover:bg-gray-100 cursor-pointer"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -102,15 +89,10 @@ const Hero47 = ({
           </div>
         </div>
 
-        {/* RIGHT SIDE (IMAGE GRID) */}
         <div className="lg:w-1/2 grid grid-cols-2 gap-4">
-          {images.slice(0, 4).map((img, idx) => (
+          {images.slice(0, 4).map((img: string, idx: number) => (
             <div key={idx} className="overflow-hidden rounded-xl">
-              <img
-                src={img}
-                alt={`grid-${idx}`}
-                className="w-full h-52 object-cover"
-              />
+              <img src={img} className="w-full h-52 object-cover" />
             </div>
           ))}
         </div>
