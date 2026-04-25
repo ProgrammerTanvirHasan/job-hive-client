@@ -12,7 +12,7 @@ export default function UserDashboardLayout({
           <div className="p-5 border-b flex items-center">
             <div className="text-3xl italic font-bold">JH</div>
             <div className="ml-auto text-right">
-              <p className="text-xs text-gray-500">User Panel</p>
+              <p className="text-xs text-gray-500">Recruiter Panel</p>
             </div>
           </div>
 
@@ -24,26 +24,22 @@ export default function UserDashboardLayout({
             >
               Dashboard
             </a>
+
             <a
-              href="/user_route/profile"
+              href="/recruiter/applicants"
               className="block px-3 py-2 rounded-lg hover:bg-gray-100"
             >
-              Profile
+              Applicants
             </a>
+
             <a
-              href="/user_route/browse-jobs"
+              href="/recruiter/notifications"
               className="block px-3 py-2 rounded-lg hover:bg-gray-100"
             >
-              Browse Jobs
+              Notifications
             </a>
             <a
-              href="/user_route/applications"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-            >
-              Applications
-            </a>
-            <a
-              href="/user_route/settings"
+              href="/recruiter/settings"
               className="block px-3 py-2 rounded-lg hover:bg-gray-100"
             >
               Settings

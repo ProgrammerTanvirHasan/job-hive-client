@@ -80,7 +80,7 @@ export default function UpdateJobsPage() {
     }
   };
 
-  if (isLoading) return <p className="p-10">Loading...</p>;
+  if (isLoading) return <p className="p-10 min-h-screen">Loading...</p>;
 
   return (
     <div className="p-10 min-h-screen ">

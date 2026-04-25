@@ -19,7 +19,7 @@ export default function AdminUsersPage() {
     },
   });
 
-  if (isLoading) return <p className="p-5">Loading...</p>;
+  if (isLoading) return <p className="p-5 min-h-screen">Loading...</p>;
   if (error) return <p className="p-5 text-red-500">Error loading jobs</p>;
 
   return (
