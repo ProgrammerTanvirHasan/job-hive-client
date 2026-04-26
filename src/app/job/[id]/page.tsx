@@ -15,6 +15,7 @@ export default function JobDetailsPage() {
   const [coverLetter, setCoverLetter] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /* ================= JOB FETCH ================= */
   const { data, isLoading, error } = useQuery({
     queryKey: ["job", id],
     queryFn: async () => {
@@ -31,78 +32,84 @@ export default function JobDetailsPage() {
 
   const job = data?.data;
 
+  /* ================= APPLY HANDLER ================= */
   const handleApply = async () => {
-    if (!resume) {
-      alert("Please upload your CV");
-      return;
-    }
+    if (!job) return;
 
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("resume", resume);
-      formData.append("coverLetter", coverLetter || "");
-      formData.append("jobId", String(job.id));
+      /* ================= FREE JOB ================= */
+      if (!job.price || job.price === 0) {
+        if (!resume) {
+          toast.error("Please upload your CV");
+          return;
+        }
 
-      const res = await fetch(`${API_URL}/api/application`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+        const formData = new FormData();
+        formData.append("resume", resume);
+        formData.append("coverLetter", coverLetter || "");
+        formData.append("jobId", String(job.id));
 
-      const data = await res.json();
+        const res = await fetch(`${API_URL}/api/application/apply`, {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        });
 
-      if (!res.ok) {
-        throw new Error(data.message || "Apply failed");
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Apply failed");
+        }
+
+        toast.success("✅ Application submitted!");
+
+        setResume(null);
+        setCoverLetter("");
+        return;
       }
 
-      toast("✅ Application submitted successfully!");
+      /* ================= PAID JOB ================= */
+      toast("Redirecting to payment... 💳");
 
-      // 🔄 reset form
-      setResume(null);
-      setCoverLetter("");
+      const payRes = await fetch(`${API_URL}/api/payment/init`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jobId: job.id,
+        }),
+      });
+
+      const payData = await payRes.json();
+
+      if (!payRes.ok) {
+        throw new Error(payData.message || "Payment failed");
+      }
+
+      // 👉 redirect to SSLCommerz
+      window.location.href = payData.url;
     } catch (err: any) {
       console.error(err);
-      alert(`❌ ${err.message}`);
+      toast.error(err.message || "Something went wrong ❌");
     } finally {
       setLoading(false);
     }
   };
-  if (isLoading) {
-    return <p className="p-5 min-h-screen">Loading...</p>;
-  }
 
-  if (error) {
-    return <p className="p-5 text-red-500">Error loading job</p>;
-  }
+  if (isLoading) return <p className="p-5">Loading...</p>;
+  if (error) return <p className="p-5 text-red-500">Error loading job</p>;
 
   return (
     <div className="min-h-screen p-6 max-w-4xl mx-auto">
-      {/* 🔥 JOB INFO */}
       <h1 className="text-3xl font-bold text-[#22426A]">{job?.title}</h1>
 
       <p className="text-gray-500 mt-1">
         {job?.company} • {job?.location}
       </p>
-
-      <div className="flex gap-2 mt-3">
-        <span className="bg-blue-100 px-2 py-1 rounded text-xs">
-          {job?.category}
-        </span>
-
-        <span
-          className={`text-xs px-2 py-1 rounded ${
-            job?.status === "PENDING"
-              ? "bg-yellow-100 text-yellow-700"
-              : job?.status === "APPROVED"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-          }`}
-        >
-          {job?.status}
-        </span>
-      </div>
 
       <p className="text-green-600 font-bold mt-2">
         {job.price && job.price > 0 ? `💰 Apply Fee: ${job.price} BDT` : "Free"}
@@ -110,38 +117,28 @@ export default function JobDetailsPage() {
 
       <p className="mt-6 text-gray-700">{job?.description}</p>
 
-      {/* 📄 REQUIREMENTS */}
-      {job?.requirements?.length > 0 && (
-        <div className="mt-5">
-          <h2 className="font-semibold">Requirements</h2>
-          <ul className="list-disc pl-5 text-sm text-gray-600">
-            {job.requirements.map((r: string, i: number) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* 📄 APPLY FORM */}
+      {/* APPLY FORM */}
       <div className="mt-8 border p-5 rounded-lg">
-        <h2 className="text-xl font-semibold mb-3">Apply for this job</h2>
+        <h2 className="text-xl font-semibold mb-3">Apply</h2>
 
-        {/* CV Upload */}
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx"
-          onChange={(e) => setResume(e.target.files?.[0] || null)}
-          className="mb-3"
-        />
+        {/* ❗ Only show upload for FREE job */}
+        {(!job.price || job.price === 0) && (
+          <>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setResume(e.target.files?.[0] || null)}
+              className="mb-3"
+            />
 
-        {/* Cover Letter */}
-        <textarea
-          placeholder="Write your cover letter..."
-          value={coverLetter}
-          onChange={(e) => setCoverLetter(e.target.value)}
-          className="w-full border p-2 rounded mb-3"
-          rows={4}
-        />
+            <textarea
+              placeholder="Cover letter..."
+              value={coverLetter}
+              onChange={(e) => setCoverLetter(e.target.value)}
+              className="w-full border p-2 rounded mb-3"
+            />
+          </>
+        )}
 
         <Button
           onClick={handleApply}

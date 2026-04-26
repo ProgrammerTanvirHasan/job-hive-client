@@ -19,7 +19,7 @@ export default function UserDashboardLayout({
           {/* Nav */}
           <nav className="flex-1 p-4 space-y-2">
             <a
-              href="/user_route"
+              href="/recruiter"
               className="block px-3 py-2 rounded-lg hover:bg-gray-100"
             >
               Dashboard
@@ -32,12 +32,6 @@ export default function UserDashboardLayout({
               Applicants
             </a>
 
-            <a
-              href="/recruiter/notifications"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-            >
-              Notifications
-            </a>
             <a
               href="/recruiter/settings"
               className="block px-3 py-2 rounded-lg hover:bg-gray-100"
@@ -57,7 +51,7 @@ export default function UserDashboardLayout({
       <main className="flex-1 p-8">
         {/* Top Bar */}
         <div className="mb-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">User Dashboard</h1>
+          <h1 className="text-2xl font-bold">Recruiter Dashboard</h1>
           <div className="text-sm text-gray-500">Welcome back 👋</div>
         </div>
 

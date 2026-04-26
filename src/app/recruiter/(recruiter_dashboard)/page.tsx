@@ -10,8 +10,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -21,7 +19,7 @@ export default function UserDashboardPage() {
   const { data: approvedJobsData } = useQuery({
     queryKey: ["approved-jobs"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/job/active`, {
+      const res = await fetch(`${API_URL}/api/job/my-posts`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -48,37 +46,18 @@ export default function UserDashboardPage() {
     },
   });
 
-  const { data: notAppliedJobsData } = useQuery({
-    queryKey: ["not-applied-jobs"],
-    queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/application/not-applied`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      return res.json();
-    },
-  });
-
   const approvedJobsCount = approvedJobsData?.data?.length || 0;
   const appliedJobsCount = appliedJobsData?.data?.length || 0;
-  const notAppliedJobsCount = notAppliedJobsData?.data?.length || 0;
 
-  // 📊 chart data
   const chartData = [
     { name: "Approved", value: approvedJobsCount },
     { name: "Applied", value: appliedJobsCount },
-    { name: "Not Applied", value: notAppliedJobsCount },
   ];
 
   return (
     <div className="space-y-10">
       <h2 className="text-xl font-semibold">Overview</h2>
 
-      {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 bg-gray-50 rounded-xl shadow">
           <p className="text-sm text-gray-500">Approved Jobs</p>
@@ -89,23 +68,8 @@ export default function UserDashboardPage() {
           <p className="text-sm text-gray-500">Applied Jobs</p>
           <h3 className="text-lg font-bold mt-2">{appliedJobsCount}</h3>
         </div>
-
-        {/* NOT APPLIED + VIEW BUTTON */}
-        <div className="p-4 bg-gray-50 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Not Applied Jobs</p>
-          <h3 className="text-lg font-bold mt-2">{notAppliedJobsCount}</h3>
-
-          <div className="text-end">
-            <Link href="/jobs/not-applied">
-              <Button className="mt-3 px-4 py-2 bg-[#22426A] text-white text-sm rounded-lg hover:bg-[#1b3554]">
-                View All
-              </Button>
-            </Link>
-          </div>
-        </div>
       </div>
 
-      {/* 📊 CHART SECTION */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h3 className="text-lg font-semibold mb-4">Job Statistics</h3>
 
