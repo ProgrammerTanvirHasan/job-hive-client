@@ -4,10 +4,10 @@ export default function UserDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-200">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <aside className="w-72 p-5">
-        <div className="h-full rounded-2xl bg-white shadow-lg flex flex-col">
+        <div className="h-full rounded-2xl  shadow-lg flex flex-col">
           {/* Logo */}
           <div className="p-5 border-b flex items-center">
             <div className="text-3xl italic font-bold">JH</div>
@@ -18,32 +18,27 @@ export default function UserDashboardLayout({
 
           {/* Nav */}
           <nav className="flex-1 p-4 space-y-2">
-            <a
-              href="/recruiter"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-            >
+            <a href="/recruiter" className="block px-3 py-2 rounded-lg ">
               Dashboard
             </a>
 
             <a
               href="/recruiter/applicants"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+              className="block px-3 py-2 rounded-lg"
             >
               Applicants
             </a>
 
             <a
               href="/recruiter/settings"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+              className="block px-3 py-2 rounded-lg"
             >
               Settings
             </a>
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t text-xs text-gray-400">
-            © 2026 JobHive
-          </div>
+          <div className="p-4 border-t text-xs ">© 2026 JobHive</div>
         </div>
       </aside>
 
@@ -55,7 +50,7 @@ export default function UserDashboardLayout({
           <div className="text-sm text-gray-500">Welcome back 👋</div>
         </div>
 
-        <div className="rounded-2xl bg-white shadow-md p-6 min-h-[80vh]">
+        <div className="rounded-2xl  shadow-md p-6 min-h-[80vh]">
           {children}
         </div>
       </main>

@@ -1,8 +1,8 @@
-import { getSession } from "@/lib/service/user.service";
+import { getAllUsers } from "@/lib/service/user.service";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const result = await getSession();
+  const result = await getAllUsers();
   if (result.error) {
     return NextResponse.json({ data: null }, { status: 401 });
   }

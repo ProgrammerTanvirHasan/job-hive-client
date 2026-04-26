@@ -15,7 +15,7 @@ export default function JobDetailsPage() {
   const [coverLetter, setCoverLetter] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /* ================= JOB FETCH ================= */
+  /* ================= FETCH JOB ================= */
   const { data, isLoading, error } = useQuery({
     queryKey: ["job", id],
     queryFn: async () => {
@@ -24,7 +24,6 @@ export default function JobDetailsPage() {
       });
 
       if (!res.ok) throw new Error("Failed to fetch job");
-
       return res.json();
     },
     enabled: !!id,
@@ -32,25 +31,27 @@ export default function JobDetailsPage() {
 
   const job = data?.data;
 
-  /* ================= APPLY HANDLER ================= */
+  /* ================= APPLY ================= */
   const handleApply = async () => {
     if (!job) return;
+
+    // Validate resume for all jobs
+    if (!resume) {
+      toast.error("Upload CV required");
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
 
     try {
+      const formData = new FormData();
+      formData.append("resume", resume);
+      formData.append("coverLetter", coverLetter);
+      formData.append("jobId", String(job.id));
+
       /* ================= FREE JOB ================= */
-      if (!job.price || job.price === 0) {
-        if (!resume) {
-          toast.error("Please upload your CV");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("resume", resume);
-        formData.append("coverLetter", coverLetter || "");
-        formData.append("jobId", String(job.id));
-
+      if (!job.price || job.price <= 0) {
         const res = await fetch(`${API_URL}/api/application/apply`, {
           method: "POST",
           credentials: "include",
@@ -59,98 +60,103 @@ export default function JobDetailsPage() {
 
         const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data.message || "Apply failed");
-        }
+        if (!res.ok) throw new Error(data.message);
 
-        toast.success("✅ Application submitted!");
-
+        toast.success("Application submitted successfully!");
         setResume(null);
         setCoverLetter("");
         return;
       }
 
       /* ================= PAID JOB ================= */
-      toast("Redirecting to payment... 💳");
+      toast("Redirecting to payment...");
 
-      const payRes = await fetch(`${API_URL}/api/payment/init`, {
+      const res = await fetch(`${API_URL}/api/payment/init-paid-application`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          jobId: job.id,
-        }),
+        body: formData,
       });
 
-      const payData = await payRes.json();
+      const data = await res.json();
 
-      if (!payRes.ok) {
-        throw new Error(payData.message || "Payment failed");
+      if (!res.ok) throw new Error(data.message);
+
+      const gatewayURL = data?.paymentURL;
+
+      if (!gatewayURL) {
+        throw new Error("No payment URL received");
       }
 
-      // 👉 redirect to SSLCommerz
-      window.location.href = payData.url;
+      window.location.href = gatewayURL;
     } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || "Something went wrong ❌");
+      toast.error(err.message || "Error occurred");
     } finally {
       setLoading(false);
     }
   };
 
-  if (isLoading) return <p className="p-5">Loading...</p>;
-  if (error) return <p className="p-5 text-red-500">Error loading job</p>;
+  if (isLoading) return <p className="min-h-screen">Loading...</p>;
+  if (error) return <p>Error loading job</p>;
 
   return (
-    <div className="min-h-screen p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-[#22426A]">{job?.title}</h1>
+    <div className="p-6 max-w-4xl mx-auto min-h-screen">
+      <h1 className="text-3xl font-bold">{job?.title}</h1>
 
-      <p className="text-gray-500 mt-1">
+      <p className="text-gray-500">
         {job?.company} • {job?.location}
       </p>
 
       <p className="text-green-600 font-bold mt-2">
-        {job.price && job.price > 0 ? `💰 Apply Fee: ${job.price} BDT` : "Free"}
+        {job?.price > 0 ? `💰 ${job.price} BDT` : "Free"}
       </p>
 
-      <p className="mt-6 text-gray-700">{job?.description}</p>
+      <p className="mt-4">{job?.description}</p>
 
-      {/* APPLY FORM */}
-      <div className="mt-8 border p-5 rounded-lg">
-        <h2 className="text-xl font-semibold mb-3">Apply</h2>
+      <div className="mt-6 border p-4 rounded">
+        <h2 className="font-bold mb-3">Apply for this Job</h2>
 
-        {/* ❗ Only show upload for FREE job */}
-        {(!job.price || job.price === 0) && (
-          <>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Upload Resume/CV *
+            </label>
             <input
               type="file"
               accept=".pdf,.doc,.docx"
               onChange={(e) => setResume(e.target.files?.[0] || null)}
-              className="mb-3"
+              className="w-full border p-2 rounded"
             />
+            {resume && (
+              <p className="text-sm text-green-600 mt-1">✓ {resume.name}</p>
+            )}
+          </div>
 
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Cover Letter (Optional)
+            </label>
             <textarea
-              placeholder="Cover letter..."
+              placeholder="Tell the employer why you're a great fit..."
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
-              className="w-full border p-2 rounded mb-3"
+              className="w-full border p-2 rounded min-h-[120px]"
             />
-          </>
-        )}
+          </div>
+        </div>
 
-        <Button
-          onClick={handleApply}
-          disabled={loading}
-          className="bg-green-700 w-full"
-        >
+        <Button onClick={handleApply} disabled={loading} className="mt-4 w-full">
           {loading
             ? "Processing..."
             : job?.price > 0
-              ? "Pay & Apply"
-              : "Apply Now"}
+              ? `Pay ${job.price} BDT & Apply`
+              : "Submit Application"}
         </Button>
+
+        {job?.price > 0 && (
+          <p className="text-sm text-gray-500 mt-2">
+            You'll be redirected to SSLCommerz for secure payment
+          </p>
+        )}
       </div>
     </div>
   );

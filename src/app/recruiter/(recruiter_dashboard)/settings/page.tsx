@@ -52,7 +52,7 @@ export default function ApplicantsPage() {
         {jobs.map((job: any) => (
           <div
             key={job.id}
-            className="border p-5 rounded-xl shadow bg-white flex justify-between items-center"
+            className="border p-5 rounded-xl shadow  flex justify-between items-center"
           >
             {/* LEFT */}
             <div>

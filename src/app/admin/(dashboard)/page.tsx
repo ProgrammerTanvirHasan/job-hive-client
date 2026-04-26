@@ -41,7 +41,7 @@ export default function AdminDashboard() {
     return <p className="p-6 text-red-500">Failed to load data</p>;
   }
 
-  // 👉 chart data same stats থেকে বানানো
+ 
   const chartData = [
     { name: "Users", value: data.totalUsers },
     { name: "Jobs", value: data.totalJobs },
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-2xl border p-4 shadow-sm">
           <h2 className="text-sm text-gray-500">Total Users</h2>
-          <p className="text-2xl font-bold">{data.totalUsers}</p>
+          <p className="text-2xl font-bold ">{data.totalUsers}</p>
         </div>
 
         <div className="rounded-2xl border p-4 shadow-sm">
