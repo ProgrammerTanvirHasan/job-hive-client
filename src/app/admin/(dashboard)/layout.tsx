@@ -34,15 +34,6 @@ const navSections = [
     title: "Financial",
     items: [{ name: "Payments", href: "/admin/payments", icon: CreditCard }],
   },
-  {
-    title: "System",
-    items: [
-      { name: "Reports", href: "/admin/reports", icon: Flag },
-      { name: "Notifications", href: "/admin/notifications", icon: Bell },
-      { name: "AI Tools", href: "/admin/tools", icon: Bot },
-      { name: "Settings", href: "/admin/setting", icon: Settings },
-    ],
-  },
 ];
 
 export default function DashboardLayout({
@@ -82,9 +73,7 @@ export default function DashboardLayout({
                           whileHover={{ x: 4 }}
                           whileTap={{ scale: 0.97 }}
                           className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
-                            isActive
-                              ? "bg-white "
-                              : "text-gray-600 hover:bg-gray-100"
+                            isActive ? " " : "text-gray-600 hover:bg-gray-100"
                           }`}
                         >
                           <Icon size={16} />
