@@ -1,10 +1,17 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { X } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function MyApplicationsPage() {
+  const queryClient = useQueryClient();
+
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  // ================= FETCH =================
   const { data, isLoading, isError } = useQuery({
     queryKey: ["my-applications"],
     queryFn: async () => {
@@ -16,21 +23,32 @@ export default function MyApplicationsPage() {
         },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch applications");
-      }
+      if (!res.ok) throw new Error("Failed");
 
       const result = await res.json();
       return result.data;
     },
   });
 
-  if (isLoading) return <p className="p-10 min-h-screen">Loading...</p>;
+  // ================= DELETE =================
+  const deleteApplication = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`${API_URL}/api/application/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
 
-  if (isError) return <p className="p-10 text-red-500">Failed to load data</p>;
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-applications"] });
+      setDeleteId(null);
+    },
+  });
 
-  if (!data || data.length === 0)
-    return <p className="p-10">No applications found</p>;
+  if (isLoading) return <p className="p-10">Loading...</p>;
+  if (isError) return <p className="p-10 text-red-500">Error</p>;
+
   return (
     <div className="p-10 min-h-screen">
       <h1 className="text-2xl font-semibold mb-6">My Applications</h1>
@@ -39,15 +57,10 @@ export default function MyApplicationsPage() {
         <table className="min-w-full border rounded-xl overflow-hidden">
           <thead className="bg-gray-100">
             <tr>
-              <th className="text-left px-4 py-3 text-sm font-semibold">
-                Job Title
-              </th>
-              <th className="text-left px-4 py-3 text-sm font-semibold">
-                Applied Date
-              </th>
-              <th className="text-left px-4 py-3 text-sm font-semibold">
-                Status
-              </th>
+              <th className="text-left px-4 py-3">Job Title</th>
+              <th className="text-left px-4 py-3">Applied Date</th>
+              <th className="text-left px-4 py-3">Status</th>
+              <th className="text-left px-4 py-3">Action</th>
             </tr>
           </thead>
 
@@ -61,21 +74,25 @@ export default function MyApplicationsPage() {
                     : "text-yellow-600";
 
               return (
-                <tr
-                  key={app.id}
-                  className="border-t hover:bg-gray-50 transition"
-                >
-                  {/* JOB TITLE */}
+                <tr key={app.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-3">{app.job?.title}</td>
 
-                  {/* DATE */}
                   <td className="px-4 py-3 text-sm text-gray-500">
                     {new Date(app.createdAt).toLocaleDateString()}
                   </td>
 
-                  {/* STATUS */}
                   <td className={`px-4 py-3 font-medium ${statusColor}`}>
                     {app.status}
+                  </td>
+
+                  {/* DELETE BUTTON */}
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => setDeleteId(app.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X size={18} />
+                    </button>
                   </td>
                 </tr>
               );
@@ -83,6 +100,35 @@ export default function MyApplicationsPage() {
           </tbody>
         </table>
       </div>
+
+      {/* ================= POPUP ================= */}
+      {deleteId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl w-80">
+            <h2 className="text-lg font-semibold mb-3">Delete Application?</h2>
+
+            <p className="text-sm text-gray-500 mb-5">
+              This action cannot be undone.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteId(null)}
+                className="px-3 py-1 bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => deleteApplication.mutate(deleteId)}
+                className="px-3 py-1 bg-red-600 text-white rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

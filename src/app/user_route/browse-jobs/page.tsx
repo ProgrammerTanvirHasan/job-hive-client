@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -90,6 +92,12 @@ export default function BrowseJobsPage() {
                 ? new Date(job.applyDeadline).toLocaleDateString()
                 : "N/A"}
             </p>
+
+            <div className="mt-4">
+              <Link href={`/job/${job.id}`}>
+                <Button>View Details</Button>
+              </Link>
+            </div>
           </div>
         ))}
       </div>

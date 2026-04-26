@@ -37,12 +37,6 @@ export default function UserDashboardLayout({
             >
               Applications
             </a>
-            <a
-              href="/user_route/settings"
-              className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-            >
-              Settings
-            </a>
           </nav>
 
           {/* Footer */}
