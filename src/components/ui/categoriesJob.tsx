@@ -50,8 +50,9 @@ export default function CategoriesJob() {
 
       {/* SUB TEXT */}
       <p className="text-gray-600 mt-2 max-w-2xl">
-        Discover high-quality paid job opportunities from top companies. Apply
-        faster, get priority visibility, and unlock better career growth.
+        Browse jobs from all categories in one place. Find the latest
+        opportunities across different industries and apply to the roles that
+        match your skills and career goals.
       </p>
 
       {/* ✅ SEARCH (new but UI clean) */}
@@ -113,7 +114,7 @@ export default function CategoriesJob() {
                 href={`/job/${job.id}`}
                 className="text-sm px-4 py-2 bg-[#22426A] text-white rounded hover:bg-[#1b3554]"
               >
-                See More →
+                See Details →
               </Link>
             </div>
           </div>

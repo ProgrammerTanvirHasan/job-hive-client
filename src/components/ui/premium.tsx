@@ -66,7 +66,7 @@ export default function Premium() {
                 href={`/job/${job.id}`}
                 className="text-sm px-4 py-2 bg-[#22426A] text-white rounded hover:bg-[#1b3554]"
               >
-                See More →
+                See Details →
               </Link>
             </div>
           </div>

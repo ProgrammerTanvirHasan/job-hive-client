@@ -46,8 +46,8 @@ export default function MyApplicationsPage() {
     },
   });
 
-  if (isLoading) return <p className="p-10">Loading...</p>;
-  if (isError) return <p className="p-10 text-red-500">Error</p>;
+  if (isLoading) return <p className="p-10 min-h-screen">Loading...</p>;
+  if (isError) return <p className="p-10 text-red-500 min-h-screen">Error</p>;
 
   return (
     <div className="p-10 min-h-screen">

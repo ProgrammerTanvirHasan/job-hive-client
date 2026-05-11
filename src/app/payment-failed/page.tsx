@@ -35,7 +35,8 @@ export default function FailedPage() {
             Payment Failed
           </h1>
           <p className="text-gray-600">
-            Unfortunately, your payment could not be processed. No charges were made.
+            Unfortunately, your payment could not be processed. No charges were
+            made.
           </p>
         </div>
 

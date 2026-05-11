@@ -8,6 +8,10 @@ import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
+const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!;
+
 export default function JobDetailsPage() {
   const { id } = useParams();
 
@@ -15,7 +19,7 @@ export default function JobDetailsPage() {
   const [coverLetter, setCoverLetter] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /* ================= FETCH JOB ================= */
+ 
   const { data, isLoading, error } = useQuery({
     queryKey: ["job", id],
     queryFn: async () => {
@@ -24,6 +28,7 @@ export default function JobDetailsPage() {
       });
 
       if (!res.ok) throw new Error("Failed to fetch job");
+
       return res.json();
     },
     enabled: !!id,
@@ -31,55 +36,124 @@ export default function JobDetailsPage() {
 
   const job = data?.data;
 
-  /* ================= APPLY ================= */
+
+  const uploadResumeToCloudinary = async (file: File) => {
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error("Resume upload failed");
+    }
+
+    return data.secure_url;
+  };
+
+  
   const handleApply = async () => {
     if (!job) return;
 
-    // Validate resume for all jobs
     if (!resume) {
       toast.error("Upload CV required");
-      setLoading(false);
       return;
     }
 
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("resume", resume);
-      formData.append("coverLetter", coverLetter);
-      formData.append("jobId", String(job.id));
+      
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
 
-      /* ================= FREE JOB ================= */
+      if (!allowedTypes.includes(resume.type)) {
+        throw new Error("Only PDF/DOC/DOCX allowed");
+      }
+
+     
+      const maxSize = 5 * 1024 * 1024;
+
+      if (resume.size > maxSize) {
+        throw new Error("File size must be less than 5MB");
+      }
+
+      toast.loading("Uploading resume...", {
+        id: "upload",
+      });
+
+     
+      const resumeUrl = await uploadResumeToCloudinary(resume);
+
+      toast.loading("Submitting application...", {
+        id: "upload",
+      });
+
+      
+      const payload = {
+        resume: resumeUrl,
+        coverLetter,
+        jobId: Number(job.id),
+      };
+
+     
       if (!job.price || job.price <= 0) {
         const res = await fetch(`${API_URL}/api/application/apply`, {
           method: "POST",
           credentials: "include",
-          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         });
 
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.message);
+        if (!res.ok) {
+          throw new Error(data.message);
+        }
 
-        toast.success("Application submitted successfully!");
+        toast.success("Application submitted successfully!", {
+          id: "upload",
+        });
+
         setResume(null);
         setCoverLetter("");
+
         return;
       }
 
       /* ================= PAID JOB ================= */
-      toast("Redirecting to payment...");
+      toast.loading("Redirecting to payment...", {
+        id: "upload",
+      });
 
       const res = await fetch(`${API_URL}/api/payment/init-paid-application`, {
         method: "POST",
         credentials: "include",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
 
       const gatewayURL = data?.paymentURL;
 
@@ -87,64 +161,91 @@ export default function JobDetailsPage() {
         throw new Error("No payment URL received");
       }
 
+      toast.success("Redirecting to payment...", {
+        id: "upload",
+      });
+
       window.location.href = gatewayURL;
     } catch (err: any) {
-      toast.error(err.message || "Error occurred");
+      toast.error(err.message || "Something went wrong", {
+        id: "upload",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  if (isLoading) return <p className="min-h-screen">Loading...</p>;
-  if (error) return <p>Error loading job</p>;
+  if (isLoading) {
+    return <p className="min-h-screen p-6">Loading...</p>;
+  }
+
+  if (error) {
+    return <p className="min-h-screen p-6">Error loading job</p>;
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto min-h-screen">
+     
       <h1 className="text-3xl font-bold">{job?.title}</h1>
 
-      <p className="text-gray-500">
+      <p className="text-gray-500 mt-1">
         {job?.company} • {job?.location}
       </p>
 
-      <p className="text-green-600 font-bold mt-2">
+      <p className="text-green-600 font-bold mt-3">
         {job?.price > 0 ? `💰 ${job.price} BDT` : "Free"}
       </p>
 
-      <p className="mt-4">{job?.description}</p>
+      <p className="mt-5 leading-7">{job?.description}</p>
 
-      <div className="mt-6 border p-4 rounded">
-        <h2 className="font-bold mb-3">Apply for this Job</h2>
+     
+      <div className="mt-8 border rounded-xl p-5 shadow-sm">
+        <h2 className="text-xl font-bold mb-4">Apply for this Job</h2>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
+        
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-2">
               Upload Resume/CV *
             </label>
+
             <input
               type="file"
               accept=".pdf,.doc,.docx"
               onChange={(e) => setResume(e.target.files?.[0] || null)}
               className="w-full border p-2 rounded"
             />
+
             {resume && (
-              <p className="text-sm text-green-600 mt-1">✓ {resume.name}</p>
+              <p className="text-sm text-green-600 mt-2">✓ {resume.name}</p>
             )}
+
+            <p className="text-xs text-gray-500 mt-1">
+              Allowed: PDF, DOC, DOCX (Max 5MB)
+            </p>
           </div>
 
+          {/* ================= COVER LETTER ================= */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium mb-2">
               Cover Letter (Optional)
             </label>
+
             <textarea
               placeholder="Tell the employer why you're a great fit..."
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
-              className="w-full border p-2 rounded min-h-[120px]"
+              className="w-full border p-3 rounded min-h-[140px]"
             />
           </div>
         </div>
 
-        <Button onClick={handleApply} disabled={loading} className="mt-4 w-full">
+        {/* ================= BUTTON ================= */}
+        <Button
+          onClick={handleApply}
+          disabled={loading}
+          className="mt-5 w-full"
+        >
           {loading
             ? "Processing..."
             : job?.price > 0
@@ -152,9 +253,10 @@ export default function JobDetailsPage() {
               : "Submit Application"}
         </Button>
 
+        {/* ================= PAID NOTE ================= */}
         {job?.price > 0 && (
-          <p className="text-sm text-gray-500 mt-2">
-            You'll be redirected to SSLCommerz for secure payment
+          <p className="text-sm text-gray-500 mt-3">
+            You’ll be redirected to SSLCommerz for secure payment.
           </p>
         )}
       </div>

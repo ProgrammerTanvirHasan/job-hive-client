@@ -21,8 +21,9 @@ export default function Premium() {
       <h1 className="text-4xl font-bold text-[#22426A]">Urgent Hiring</h1>
 
       <p className="text-gray-600 mt-2 max-w-2xl">
-        Discover high-quality paid job opportunities from top companies. Apply
-        faster, get priority visibility, and unlock better career growth.
+        Explore urgent job openings with application deadlines within the next 3
+        days. Apply quickly to high-priority opportunities from top companies
+        before they close.
       </p>
 
       <div className="mt-6 flex gap-4 text-sm">
@@ -62,7 +63,7 @@ export default function Premium() {
                 href={`/job/${job.id}`}
                 className="text-sm px-4 py-2 bg-[#22426A] text-white rounded hover:bg-[#1b3554]"
               >
-                See More →
+                See Details →
               </Link>
             </div>
           </div>
