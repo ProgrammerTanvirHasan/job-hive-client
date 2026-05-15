@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!;
 
@@ -19,7 +18,6 @@ export default function JobDetailsPage() {
   const [coverLetter, setCoverLetter] = useState("");
   const [loading, setLoading] = useState(false);
 
- 
   const { data, isLoading, error } = useQuery({
     queryKey: ["job", id],
     queryFn: async () => {
@@ -35,7 +33,6 @@ export default function JobDetailsPage() {
   });
 
   const job = data?.data;
-
 
   const uploadResumeToCloudinary = async (file: File) => {
     const formData = new FormData();
@@ -53,14 +50,15 @@ export default function JobDetailsPage() {
 
     const data = await res.json();
 
+   
+
     if (!res.ok) {
-      throw new Error("Resume upload failed");
+      throw new Error(data?.error?.message || "Upload failed");
     }
 
     return data.secure_url;
   };
 
-  
   const handleApply = async () => {
     if (!job) return;
 
@@ -72,7 +70,6 @@ export default function JobDetailsPage() {
     setLoading(true);
 
     try {
-      
       const allowedTypes = [
         "application/pdf",
         "application/msword",
@@ -83,7 +80,6 @@ export default function JobDetailsPage() {
         throw new Error("Only PDF/DOC/DOCX allowed");
       }
 
-     
       const maxSize = 5 * 1024 * 1024;
 
       if (resume.size > maxSize) {
@@ -94,21 +90,18 @@ export default function JobDetailsPage() {
         id: "upload",
       });
 
-     
       const resumeUrl = await uploadResumeToCloudinary(resume);
 
       toast.loading("Submitting application...", {
         id: "upload",
       });
 
-      
       const payload = {
         resume: resumeUrl,
         coverLetter,
         jobId: Number(job.id),
       };
 
-     
       if (!job.price || job.price <= 0) {
         const res = await fetch(`${API_URL}/api/application/apply`, {
           method: "POST",
@@ -185,7 +178,6 @@ export default function JobDetailsPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto min-h-screen">
-     
       <h1 className="text-3xl font-bold">{job?.title}</h1>
 
       <p className="text-gray-500 mt-1">
@@ -198,12 +190,10 @@ export default function JobDetailsPage() {
 
       <p className="mt-5 leading-7">{job?.description}</p>
 
-     
       <div className="mt-8 border rounded-xl p-5 shadow-sm">
         <h2 className="text-xl font-bold mb-4">Apply for this Job</h2>
 
         <div className="space-y-4">
-        
           <div>
             <label className="block text-sm font-medium mb-2">
               Upload Resume/CV *

@@ -32,7 +32,9 @@ export default function MyPostPage() {
   }
 
   if (isError) {
-    return <p className="p-10 text-red-500">Failed to load posts</p>;
+    return (
+      <p className="p-10 text-red-500 min-h-screen">Failed to load posts</p>
+    );
   }
 
   return (

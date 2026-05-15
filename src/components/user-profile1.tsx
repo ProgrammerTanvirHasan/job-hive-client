@@ -11,6 +11,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface User {
   name: string;
@@ -93,8 +94,11 @@ const UserProfile1 = ({
             )}
           </CardContent>
 
-          <CardFooter className="flex gap-2">
-            <Button className="flex-1">Message</Button>
+          <CardFooter className="flex ">
+            <Link href="/" className="flex-1">
+              {" "}
+              <Button className="flex-1">Go Back</Button>
+            </Link>
 
             <Button variant="outline" className="flex-1" onClick={onEditToggle}>
               {isEditing ? "Cancel" : "Edit"}

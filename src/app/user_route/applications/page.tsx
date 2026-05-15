@@ -81,8 +81,34 @@ export default function MyApplicationsPage() {
                     {new Date(app.createdAt).toLocaleDateString()}
                   </td>
 
-                  <td className={`px-4 py-3 font-medium ${statusColor}`}>
-                    {app.status}
+                  <td className="px-4 py-3">
+                    <div className="flex flex-col gap-1">
+                      {/* STATUS */}
+
+                      <span className={`font-medium ${statusColor}`}>
+                        {app.status}
+                      </span>
+
+                      {/* INTERVIEW INFO */}
+
+                      {app.status === "INTERVIEW" && app.interviewDate && (
+                        <div className="mt-1 text-sm">
+                          {/* DATE */}
+
+                          <p className="text-blue-600 font-medium">
+                            📅 {new Date(app.interviewDate).toLocaleString()}
+                          </p>
+
+                          {/* MESSAGE */}
+
+                          {app.recruiterMessage && (
+                            <p className="text-gray-500 text-xs mt-1 leading-relaxed">
+                              {app.recruiterMessage}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </td>
 
                   {/* DELETE BUTTON */}

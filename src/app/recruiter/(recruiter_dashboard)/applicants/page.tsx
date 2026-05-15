@@ -7,7 +7,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ApplicantsPage() {
   const [loadingId, setLoadingId] = useState<number | null>(null);
-
+  const [selectedResume, setSelectedResume] = useState<string | null>(null);
+  const isPdf = selectedResume?.split("?")[0].toLowerCase().endsWith(".pdf");
+ 
   const [interviewDates, setInterviewDates] = useState<{
     [key: number]: string;
   }>({});
@@ -197,14 +199,18 @@ export default function ApplicantsPage() {
                     )}
 
                     <div className="mt-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
-                      <a
-                        href={app.resume}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-600 text-sm font-medium hover:underline"
+                      <button
+                        type="button"
+                        onClick={() => {
+                        
+                         
+
+                          setSelectedResume(app.resume);
+                        }}
+                        className="text-blue-600 text-sm font-medium hover:underline relative z-50"
                       >
                         📄 View Resume
-                      </a>
+                      </button>
 
                       <span className="text-xs text-gray-400">
                         Applied: {new Date(app.createdAt).toLocaleDateString()}
@@ -265,6 +271,20 @@ export default function ApplicantsPage() {
           ))}
         </div>
       </div>
+      {selectedResume && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-5xl h-[90vh] rounded-xl overflow-hidden relative shadow-2xl">
+            <button
+              onClick={() => setSelectedResume(null)}
+              className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg z-10"
+            >
+              Close
+            </button>
+
+            <iframe src={selectedResume} className="w-full h-full" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
